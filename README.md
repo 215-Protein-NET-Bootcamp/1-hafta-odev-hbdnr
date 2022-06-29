@@ -16,3 +16,9 @@ Fotograf 3:
 ![5](https://user-images.githubusercontent.com/62338386/176519094-e791e532-dd72-4230-98b3-82c7deee96ae.png)
 Fotograf 4:
 ![6](https://user-images.githubusercontent.com/62338386/176519137-86bbb5d4-9296-4d65-951a-16921ff611d0.png)
+
+Validation kontrollerinin yapilmasi:
+Fotograf 1:
+![7](https://user-images.githubusercontent.com/62338386/176519987-5185ff3e-6563-4024-be59-1ded1f3d4b79.png)
+Fotograf 2:
+![8](https://user-images.githubusercontent.com/62338386/176520288-6a078e53-9149-4ddb-98ae-bd3cbe1d9a63.png)
