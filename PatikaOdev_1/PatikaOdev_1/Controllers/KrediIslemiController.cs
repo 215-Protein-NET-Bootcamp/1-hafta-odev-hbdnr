@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using PatikaOdev_1.Models;
 using PatikaOdev_1.Validation;
 using System;
 using System.Collections.Generic;
@@ -11,42 +12,17 @@ using System.Threading.Tasks;
 namespace PatikaOdev_1.Controllers
 {
 
-    public class options
-    {
-        public double FaizOrani { get; set; }
-
-        public string istenenMiktarNegatif { get; set; }
-        public string vadeTutariNegatif { get; set; }
-        public string istenenMiktarNull { get; set; }
-        public string vadeTutariNull { get; set; }
-    }
-
-    public class Faiz
-    {
-        public double vadeTutari { get; set; }
-        public double istenilenMiktar { get; set; }
-    }
-
-    public class OdemePlani
-    {
-        public int ay { get; set; }
-        public double taksitTutari { get; set; }
-        public double faiz { get; set; }
-        public double anaPara { get; set; }
-        public double bakiye { get; set; }
-    }
-
     [Route("api/[controller]")]
     [ApiController]
-    public class KrediIslemi : ControllerBase
+    public class KrediIslemiController : ControllerBase
     {
-        readonly IConfiguration _configuration;
-        readonly options _options;
+        private readonly IConfiguration _configuration;
+        private readonly Options _options;
 
-        public KrediIslemi(IConfiguration configuration)
+        public KrediIslemiController(IConfiguration configuration)
         {
             _configuration = configuration;
-            _options = configuration.GetSection("options").Get<options>();
+            _options = configuration.GetSection("options").Get<Options>();
         }
 
         public double toplamFaizMiktari = 0;
@@ -87,7 +63,7 @@ namespace PatikaOdev_1.Controllers
                 AlinanKrediTutari -= azalacakMiktar;
             }
 
-            list.Add(new Faiz { vadeTutari = toplamTaksitTutari, istenilenMiktar = toplamFaizMiktari });
+            list.Add(new Faiz { VadeTutari = toplamTaksitTutari, IstenilenMiktar = toplamFaizMiktari });
             return Ok(list);
         }
 
@@ -128,48 +104,48 @@ namespace PatikaOdev_1.Controllers
                 {
                     AlinanKrediTutari = 0;
                 }
-                list.Add(new OdemePlani { ay = i, taksitTutari = esitTaksitTutari, faiz = dusulecekMiktar, anaPara = azalacakMiktar, bakiye = AlinanKrediTutari });
+                list.Add(new OdemePlani { Ay = i, TaksitTutari = esitTaksitTutari, Faiz = dusulecekMiktar, AnaPara = azalacakMiktar, Bakiye = AlinanKrediTutari });
 
             }
 
             return Ok(list);
         }
 
-        private IValidationResult ValidationCheckNullistenilenMiktar(double? istenilenMiktar)
+        private IValidationResult ValidationCheckNullistenilenMiktar(double? IstenilenMiktar)
         {
-            if (istenilenMiktar == null || istenilenMiktar == 0)
-                return new ErrorValidationResult(_options.istenenMiktarNull);
+            if (IstenilenMiktar == null || IstenilenMiktar == 0)
+                return new ErrorValidationResult(_options.IstenenMiktarNull);
             return new SuccessValidationResult();
         }
 
-        private IValidationResult ValidationCheckNegativeistenilenMiktar(double istenilenMiktar)
+        private IValidationResult ValidationCheckNegativeistenilenMiktar(double IstenilenMiktar)
         {
-            if (istenilenMiktar < 0)
-                return new ErrorValidationResult(_options.istenenMiktarNegatif);
+            if (IstenilenMiktar < 0)
+                return new ErrorValidationResult(_options.IstenenMiktarNegatif);
             return new SuccessValidationResult();
         }
 
-        private IValidationResult ValidationCheckNegativevadeTutari(double vadeTutari)
+        private IValidationResult ValidationCheckNegativevadeTutari(double VadeTutari)
         {
-            if (vadeTutari < 0)
-                return new ErrorValidationResult(_options.vadeTutariNegatif);
+            if (VadeTutari < 0)
+                return new ErrorValidationResult(_options.VadeTutariNegatif);
             return new SuccessValidationResult();
         }
 
-        private IValidationResult ValidationCheckNullvadeTutari(double? vadeTutari)
+        private IValidationResult ValidationCheckNullvadeTutari(double? VadeTutari)
         {
-            if (vadeTutari == null || vadeTutari == 0)
-                return new ErrorValidationResult(_options.vadeTutariNull);
+            if (VadeTutari == null || VadeTutari == 0)
+                return new ErrorValidationResult(_options.VadeTutariNull);
             return new SuccessValidationResult();
         }
 
-        private IValidationResult ValidationResult(double vadeTutari, double istenilenMiktar)
+        private IValidationResult ValidationResult(double VadeTutari, double IstenilenMiktar)
         {
             return ValidationHelper.Run(
-                ValidationCheckNullistenilenMiktar(istenilenMiktar),
-                ValidationCheckNegativeistenilenMiktar(istenilenMiktar),
-                ValidationCheckNegativevadeTutari(vadeTutari),
-                ValidationCheckNullvadeTutari(vadeTutari)
+                ValidationCheckNullistenilenMiktar(IstenilenMiktar),
+                ValidationCheckNegativeistenilenMiktar(IstenilenMiktar),
+                ValidationCheckNegativevadeTutari(VadeTutari),
+                ValidationCheckNullvadeTutari(VadeTutari)
                 );
         }
 
