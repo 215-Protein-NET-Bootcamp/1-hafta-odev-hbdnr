@@ -10,7 +10,7 @@
 
 **Fotoğraf 2:**
 
-![toplam ödenecek tutar ve faizin gösterilmesi](https://user-images.githubusercontent.com/62338386/176518669-6ebb6081-f949-42d0-8f57-31edd1ff39f2.png)
+![toplam ödenecek tutar ve faizin gösterilmesi] (https://user-images.githubusercontent.com/62338386/176518669-6ebb6081-f949-42d0-8f57-31edd1ff39f2.png)
 
 
 ### Ödenecek para miktarının aylık olarak listelenmesi:
