@@ -17,6 +17,7 @@ namespace PatikaOdev_1.Controllers
     public class KrediIslemiController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        //appsettings dosyasında tanımlanan özelliklere erişmek iin eklendi.
         private readonly Options _options;
 
         public KrediIslemiController(IConfiguration configuration)
@@ -27,33 +28,37 @@ namespace PatikaOdev_1.Controllers
 
         public double toplamFaizMiktari = 0;
         // GET api/<KrediIslemi>/5
+        //Ödenecek toplam faiz ve tutarın bilgisini geri dönen metod.
         [HttpGet]
         [Route("Faiz")]
         public IActionResult GetFaiz(double vadeTutari, double istenilenMiktar)
         {
+            //validation kontrollerinin uygulanması
             var result = ValidationResult(vadeTutari, istenilenMiktar);
-
+            //dönüş null değilse yani hata varsa bağlı olunan hatayı dönecek.
             if (result != null)
                 return BadRequest(result);
 
             List<Faiz> list = new();
 
-            //Anuite formülü
-            //float faizOrani = float.Parse(_configuration["FaizOrani"]);
+            //faiz oranı (0.01)
             double faizOrani = _options.FaizOrani;
+            //vade (ay) sayısı (örnek: 9)
             double donemSayisi = vadeTutari;
+            //istenen toplam para miktarı (örnek: 50000)
             double AlinanKrediTutari = istenilenMiktar;
+            //ödenecek eşit taksit miktarı
             double esitTaksitTutari;
+            //faiz ile beraber toplam ödenecek para
             double toplamTaksitTutari;
 
-
-
+            //Anuite formülü
             double formul1 = ((Math.Pow((1 + faizOrani), donemSayisi)) - 1) / ((Math.Pow((1 + faizOrani), donemSayisi)) * faizOrani);
-
             esitTaksitTutari = AlinanKrediTutari / formul1;
 
             toplamTaksitTutari = esitTaksitTutari * donemSayisi;
 
+            //faiz miktarının hesaplanması
             for (int i = 1; i < donemSayisi + 1; i++)
             {
                 double dusulecekMiktar = 0;
@@ -64,6 +69,7 @@ namespace PatikaOdev_1.Controllers
             }
 
             list.Add(new Faiz { VadeTutari = toplamTaksitTutari, IstenilenMiktar = toplamFaizMiktari });
+            //dönüş liste şeklinde olacak ve her durumda dönecek (OK durumundan dolayı)
             return Ok(list);
         }
 
@@ -71,28 +77,32 @@ namespace PatikaOdev_1.Controllers
         [Route("OdemePlani")]
         public IActionResult GetOdemePlani(double vadeTutari, double istenilenMiktar)
         {
+            //validation kontrollerinin uygulanması
             var result = ValidationResult(vadeTutari, istenilenMiktar);
-
+            //dönüş null değilse yani hata varsa bağlı olunan hatayı dönecek.
             if (result != null)
                 return BadRequest(result);
 
             List<OdemePlani> list = new();
 
-            //Anuite formülü
+            //faiz oranı (0.01)
             double faizOrani = _options.FaizOrani;
+            //vade (ay) sayısı (örnek: 9)
             double donemSayisi = vadeTutari;
+            //istenen toplam para miktarı (örnek: 50000)
             double AlinanKrediTutari = istenilenMiktar;
+            //ödenecek eşit taksit miktarı
             double esitTaksitTutari;
-            double toplamTaksitTutari;
 
-            //list.Add(new OdemePlani { ay = 000, taksitTutari = faizOrani, faiz = 000, anaPara = 0000, bakiye = AlinanKrediTutari });
+            //double toplamTaksitTutari;
 
+            //Anuite formülü
             double formul1 = ((Math.Pow((1 + faizOrani), donemSayisi)) - 1) / ((Math.Pow((1 + faizOrani), donemSayisi)) * faizOrani);
-
             esitTaksitTutari = AlinanKrediTutari / formul1;
 
-            toplamTaksitTutari = esitTaksitTutari * donemSayisi;
+            //toplamTaksitTutari = esitTaksitTutari * donemSayisi;
 
+            //faiz miktarı ve ödenecek para miktarının aylara göre hesaplanması ve listeye atanması
             for (int i = 1; i < donemSayisi + 1; i++)
             {
                 double dusulecekMiktar = 0;
@@ -107,9 +117,11 @@ namespace PatikaOdev_1.Controllers
                 list.Add(new OdemePlani { Ay = i, TaksitTutari = esitTaksitTutari, Faiz = dusulecekMiktar, AnaPara = azalacakMiktar, Bakiye = AlinanKrediTutari });
 
             }
-
+            //dönüş liste şeklinde olacak ve her durumda dönecek (OK durumundan dolayı)
             return Ok(list);
         }
+
+        //validation kontrolleri için gerekli metodlar.
 
         private IValidationResult ValidationCheckNullistenilenMiktar(double? IstenilenMiktar)
         {
@@ -139,6 +151,7 @@ namespace PatikaOdev_1.Controllers
             return new SuccessValidationResult();
         }
 
+        //validation kontrollerinin uygulanması
         private IValidationResult ValidationResult(double VadeTutari, double IstenilenMiktar)
         {
             return ValidationHelper.Run(
